@@ -1,7 +1,7 @@
-import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
-import mongoose from "mongoose";
+const express = require('express')
+const dotenv = require('dotenv')
+const cors = require('cors')
+const mongoose = require('mongoose')
 
 import studentRoutes from "./routes/studentRoutes.js";
 import facultyRoutes from "./routes/facultyRoutes.js";
