@@ -22,7 +22,7 @@ export const Student = User.discriminator("student", studentSchema);
 
 // Faculty Schema extra fields in faculty that all users dont have
 const facultySchema = new mongoose.Schema({
-  facultyCode: { type: String, required: true, unique: true },
+  facultyID: { type: String, required: true, unique: true },
   assignedBatch: { type: String, required: true },
 });
 
