@@ -1,7 +1,6 @@
 import express from "express";
-import Faculty from "../models/Faculty.js";
-import Student from "../models/Student.js";
-import InternshipRecord from "../models/Record.js";
+import { Faculty, Student } from "../models/User.js";
+import { InternshipRecord } from "../models/Record.js";
 
 const router = express.Router();
 
