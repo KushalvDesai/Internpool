@@ -16,10 +16,10 @@ const weeklyReportSchema = new mongoose.Schema({
 
 const reportSchema = new mongoose.Schema({
   record: { type: mongoose.Schema.Types.ObjectId, ref: 'InternshipRecord', required: true },
-  student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: true },
-  faculty: { type: mongoose.Schema.Types.ObjectId, ref: 'Faculty', required: true },
+  student: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  faculty: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   studentID: { type: String, required: true },
-  facultyCode: { type: String, required: true },
+  facultyID: { type: String, required: true },
   weeklyReports: {
     type: [weeklyReportSchema],
     validate: [arrayLimit, '{PATH} exceeds the limit of 6']
