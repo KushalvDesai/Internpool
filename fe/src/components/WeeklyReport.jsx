@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const weeks = [1, 2, 3, 4];
 
 const initialForm = {
-  studentId: '',
+  studentID: '',
   studentName: '',
   sem: '',
   div: '',
@@ -121,7 +121,7 @@ const WeeklyReport = () => {
             <div style={{ display: 'flex', gap: 8 }}>
               <div style={{ flex: 1 }}>
                 <label>Student ID</label>
-                <input name="studentId" value={reports[currentWeek].studentId} onChange={handleChange} required />
+                <input name="studentID" value={reports[currentWeek].studentID} onChange={handleChange} required />
               </div>
               <div style={{ flex: 2 }}>
                 <label>Student Name</label>

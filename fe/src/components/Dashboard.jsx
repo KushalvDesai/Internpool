@@ -9,9 +9,11 @@ const initialInternships = [
 const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  // Get user from localStorage
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
   const studentData = {
-    name: 'John Doe',
-    email: 'john.doe@example.com',
+    name: user.fname && user.lname ? `${user.fname} ${user.lname}` : 'John Doe',
+    email: user.email || 'john.doe@example.com',
   };
   const [internships, setInternships] = useState(initialInternships);
   const [msg, setMsg] = useState('');

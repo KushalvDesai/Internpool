@@ -11,8 +11,8 @@ router.get("/companies", async (req, res) => {
   res.json(companies);
 });
 
-router.get("/faculty/:studentId", async (req, res) => {
-  const student = await Student.findById(req.params.studentId);
+router.get("/faculty/:studentID", async (req, res) => {
+  const student = await Student.findById(req.params.studentID);
   if (!student) return res.status(404).json({ message: "Student not found" });
   const faculty = await Faculty.findOne({ assignedBatch: student.batch });
   res.json(faculty);
