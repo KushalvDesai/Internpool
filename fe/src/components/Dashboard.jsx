@@ -1,6 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const internships = [
+  { id: 1, company: 'Tech Corp', position: 'Intern', duration: '3 months' },
+  { id: 2, company: 'Web Solutions', position: 'Intern', duration: '6 months' },
+];
+
 const Dashboard = () => {
   const navigate = useNavigate();
 
@@ -26,7 +31,17 @@ const Dashboard = () => {
             <b>Name:</b> {studentData.name}<br />
             <b>Email:</b> {studentData.email}
           </div>
-          {/* Reports list can be added here if needed */}
+          <h3 style={{ margin: '16px 0 8px' }}>Internships</h3>
+          <ul style={{ paddingLeft: 0, listStyle: 'none' }}>
+            {internships.map(internship => (
+              <li key={internship.id} style={{ marginBottom: 16, background: '#f7f6f3', borderRadius: 8, padding: 16, border: '1px solid #e3e3e3', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <b>{internship.position}</b> at <b>{internship.company}</b> for {internship.duration}
+                </div>
+                <button onClick={() => navigate(`/internship/${internship.id}`)} style={{ marginLeft: 16 }}>Open</button>
+              </li>
+            ))}
+          </ul>
         </div>
       </main>
     </div>
@@ -34,4 +49,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-// The sidebar now redirects to a new WeeklyReport page for report submission.
+// Dashboard now lists internships and links to InternshipDetail page for each.
