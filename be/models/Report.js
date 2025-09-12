@@ -8,7 +8,10 @@ const weeklyReportSchema = new mongoose.Schema({
       question: String,
       answer: String
     }
-  ]
+  ],
+  submittedAt: { type: Date, default: Date.now },
+  gradedAt: Date,
+  grade: { type: Number, min: 0, max: 10 },
 });
 
 const reportSchema = new mongoose.Schema({
@@ -17,9 +20,6 @@ const reportSchema = new mongoose.Schema({
   faculty: { type: mongoose.Schema.Types.ObjectId, ref: 'Faculty', required: true },
   studentID: { type: String, required: true },
   facultyCode: { type: String, required: true },
-  submittedAt: { type: Date, default: Date.now },
-  gradedAt: Date,
-  grade: { type: Number, min: 0, max: 10 },
   weeklyReports: {
     type: [weeklyReportSchema],
     validate: [arrayLimit, '{PATH} exceeds the limit of 6']
