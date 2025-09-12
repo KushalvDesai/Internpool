@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const initialInternships = [
-  { id: 1, company: 'Tech Corp', position: 'Intern', duration: '4', technology: 'React', type: 'Offline', workingHours: '35' },
-  { id: 2, company: 'Web Solutions', position: 'Intern', duration: '6', technology: 'Node.js', type: 'Online', workingHours: '30' },
+  { id: 1, company: 'Tech Corp', position: 'Intern', startDate: '2025-06-01', endDate: '2025-06-28', weeks: 4, technology: 'React', type: 'Offline', workingHours: '35', sem: '5', div: '1' },
+  { id: 2, company: 'Web Solutions', position: 'Intern', startDate: '2025-07-01', endDate: '2025-08-12', weeks: 6, technology: 'Node.js', type: 'Online', workingHours: '30', sem: '5', div: '1' },
 ];
 
 const Dashboard = () => {
@@ -13,14 +13,16 @@ const Dashboard = () => {
     name: 'John Doe',
     email: 'john.doe@example.com',
   };
-  // Add new internship from AddInternship page if redirected with state
-  const [internships, setInternships] = useState(() => {
-    if (location.state && location.state.newInternship) {
-      return [...initialInternships, location.state.newInternship];
-    }
-    return initialInternships;
-  });
+  const [internships, setInternships] = useState(initialInternships);
   const [msg, setMsg] = useState('');
+
+  // Only append new internship if present in location.state
+  useEffect(() => {
+    if (location.state && location.state.newInternship) {
+      setInternships(prev => [...prev, location.state.newInternship]);
+      window.history.replaceState({}, document.title); // Clear state so it doesn't re-add on refresh
+    }
+  }, [location.state]);
 
   return (
     <div style={{ minHeight: '100vh', background: '#f7f6f3', padding: 0 }}>
@@ -36,8 +38,11 @@ const Dashboard = () => {
           {internships.map(internship => (
             <li key={internship.id} style={{ marginBottom: 16, background: '#f7f6f3', borderRadius: 8, padding: 16, border: '1px solid #e3e3e3', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <b>{internship.position}</b> at <b>{internship.company}</b> for {internship.duration} weeks<br />
-                <span style={{ fontSize: 13, color: '#555' }}>Tech: {internship.technology} | Type: {internship.type} | Hours: {internship.workingHours}</span>
+                <b>{internship.position}</b> at <b>{internship.company}</b><br />
+                <span style={{ fontSize: 13, color: '#555' }}>
+                  {internship.startDate} to {internship.endDate} | Weeks: {internship.weeks}<br />
+                  Tech: {internship.technology} | Type: {internship.type} | Hours: {internship.workingHours}
+                </span>
               </div>
               <button onClick={() => navigate(`/internship/${internship.id}`, { state: { internship } })} style={{ marginLeft: 16 }}>Open</button>
             </li>
@@ -50,4 +55,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-// Dashboard now redirects to AddInternship page for adding internships.
+// Now adding a new internship appends to the list instead of replacing it.

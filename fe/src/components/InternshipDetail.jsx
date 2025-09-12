@@ -18,12 +18,16 @@ const InternshipDetail = () => {
     id,
     company: id === '1' ? 'Tech Corp' : 'Web Solutions',
     position: 'Intern',
-    duration: '4',
+    startDate: '2025-06-01',
+    endDate: '2025-06-28',
+    weeks: 4,
     technology: 'React',
     type: 'Offline',
     workingHours: '35',
+    sem: '5',
+    div: '1',
   };
-  const numWeeks = parseInt(internship.duration) || 4;
+  const numWeeks = parseInt(internship.weeks) || 4;
   const weeks = Array.from({ length: numWeeks }, (_, i) => i + 1);
   // Store reports for each week
   const [reports, setReports] = useState(() => {
@@ -117,10 +121,11 @@ const InternshipDetail = () => {
         <div className="card" style={{ maxWidth: 600, width: '100%' }}>
           <h2 style={{ textAlign: 'center', marginBottom: 16 }}>{internship.company} - {internship.position}</h2>
           <div style={{ marginBottom: 16 }}>
-            <b>Duration:</b> {internship.duration} weeks<br />
+            <b>Duration:</b> {internship.startDate} to {internship.endDate} ({internship.weeks} weeks)<br />
             <b>Technology:</b> {internship.technology}<br />
             <b>Type:</b> {internship.type}<br />
-            <b>Working Hours/week:</b> {internship.workingHours}
+            <b>Working Hours/week:</b> {internship.workingHours}<br />
+            <b>Semester:</b> {internship.sem} <b>Div:</b> {internship.div}
           </div>
           <h3 style={{ textAlign: 'center', marginBottom: 16 }}>Weekly Report - Week {currentWeek}</h3>
           <form style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -147,4 +152,4 @@ const InternshipDetail = () => {
 };
 
 export default InternshipDetail;
-// InternshipDetail now uses the internship's duration to determine the number of weeks for weekly reports.
+// InternshipDetail now displays start/end dates and uses weeks for weekly reports.
