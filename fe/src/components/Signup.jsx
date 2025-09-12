@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
-  const [form, setForm] = useState({ name: '', email: '', password: '', file: null });
+  const [form, setForm] = useState({ fname: '', lname: '', email: '', password: '', studentID: '', batch: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleChange = e => {
-    const { name, value, files } = e.target;
+    const { name, value } = e.target;
     setForm(f => ({
       ...f,
-      [name]: files ? files[0] : value,
+      [name]: value,
     }));
   };
 
@@ -20,32 +20,54 @@ const Signup = () => {
       setError('Password must be at least 8 characters');
       return;
     }
-    // Simulate file upload (replace with real API as needed)
-    const data = new FormData();
-    data.append('name', form.name);
-    data.append('email', form.email);
-    data.append('password', form.password);
-    if (form.file) data.append('file', form.file);
-    await fetch('/api/signup', {
-      method: 'POST',
-      body: data,
-    });
-    navigate('/dashboard');
+    // Send JSON to backend as required
+    const payload = {
+      fname: form.fname,
+      lname: form.lname,
+      email: form.email,
+      password: form.password,
+      role: 'student',
+      studentID: form.studentID,
+      batch: form.batch,
+    };
+    try {
+      const res = await fetch('http://localhost:3000/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.message || 'Signup failed');
+        return;
+      }
+  // Save user info to localStorage for dashboard
+  const userData = await res.json();
+  localStorage.setItem('user', JSON.stringify(userData.user || {}));
+  navigate('/dashboard');
+    } catch (err) {
+      setError('Network error');
+    }
   };
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f7f6f3' }}>
+      
       <div style={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px #ececec', padding: 32, maxWidth: 350, width: '100%' }}>
         <h2 style={{ textAlign: 'center', marginBottom: 24 }}>Create your account</h2>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <label>Name</label>
-          <input name="name" placeholder="Name" value={form.name} onChange={handleChange} required />
+          <label>First Name</label>
+          <input name="fname" placeholder="First Name" value={form.fname} onChange={handleChange} required />
+          <label>Last Name</label>
+          <input name="lname" placeholder="Last Name" value={form.lname} onChange={handleChange} required />
           <label>Email</label>
           <input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} required />
           <label>Password</label>
           <input name="password" type="password" placeholder="Password (min 8 chars)" value={form.password} onChange={handleChange} required />
-          <label>Profile Picture</label>
-          <input name="file" type="file" accept="image/*" onChange={handleChange} style={{ padding: 0, border: 'none', background: 'none' }} />
+          <label>Student ID</label>
+          <input name="studentID" placeholder="Student ID" value={form.studentID} onChange={handleChange} required />
+          <label>Batch</label>
+          <input name="batch" placeholder="Batch (e.g. A, B)" value={form.batch} onChange={handleChange} required />
           {error && <div style={{ color: 'red', fontSize: 13 }}>{error}</div>}
           <button type="submit" style={{ marginTop: 12 }}>Signup</button>
         </form>

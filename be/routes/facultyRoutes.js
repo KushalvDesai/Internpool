@@ -21,24 +21,24 @@ router.get("/students/internshipType/:type", async (req, res) => {
   res.json(filtered);
 });
 
-router.get("/students/id/:studentId", async (req, res) => {
+router.get("/students/id/:studentID", async (req, res) => {
   if (!req.query.facultyId) return res.status(400).json({ message: "facultyId is required" });
   const faculty = await Faculty.findById(req.query.facultyId);
-  const student = await Student.findById(req.params.studentId);
+  const student = await Student.findById(req.params.studentID);
   if (!student || student.batch !== faculty.assignedBatch) {
     return res.status(403).json({ message: "Access denied" });
   }
   res.json(student);
 });
 
-router.get("/reports/:studentId", async (req, res) => {
+router.get("/reports/:studentID", async (req, res) => {
   if (!req.query.facultyId) return res.status(400).json({ message: "facultyId is required" });
   const faculty = await Faculty.findById(req.query.facultyId);
-  const student = await Student.findById(req.params.studentId);
+  const student = await Student.findById(req.params.studentID);
   if (!student || student.batch !== faculty.assignedBatch) {
     return res.status(403).json({ message: "Access denied" });
   }
-  const reports = await Report.find({ student: req.params.studentId });
+  const reports = await Report.find({ student: req.params.studentID });
   const submitted = reports.filter(r => r.weeklyReports.some(w => w.submittedAt));
   res.json(submitted);
 });
