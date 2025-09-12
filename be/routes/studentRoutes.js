@@ -1,9 +1,8 @@
 import express from "express";
-import Company from "../models/Company.js";
+import { Company } from "../models/Company.js";
 import { InternshipRecord } from "../models/Record.js";
 import Report from "../models/Report.js";
-import Faculty from "../models/Faculty.js";
-import Student from "../models/Student.js";
+import { Faculty, Student } from "../models/User.js";
 
 const router = express.Router();
 
