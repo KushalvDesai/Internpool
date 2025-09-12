@@ -1,87 +1,37 @@
-import React, { useState } from 'react';
-import Profile from './Profile';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
-  const [show, setShow] = useState('');
-  const [msg, setMsg] = useState('');
+  const navigate = useNavigate();
 
-  // Sample student data, this could be fetched from an API or context
+  // Sample student data
   const studentData = {
     name: 'John Doe',
     email: 'john.doe@example.com',
-    internshipRecords: [
-      { id: 1, company: 'Tech Corp', position: 'Intern', duration: '3 months' },
-      { id: 2, company: 'Web Solutions', position: 'Intern', duration: '6 months' },
-    ],
-  };
-
-  // Dummy profile data
-  const profile = { name: 'Student Name', email: 'student@email.com', batch: '2025' };
-
-  // Minimal forms
-  const forms = {
-    internship: (
-      <form onSubmit={async e => {
-        e.preventDefault();
-        await fetch('/api/student/internship', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ /* ... */ }) });
-        setMsg('Internship added!');
-        setShow('');
-      }}>
-        <input placeholder="Company Name" required style={{ width: '100%', margin: 4 }} />
-        <button type="submit" style={{ width: '100%', margin: 4 }}>Add Internship</button>
-      </form>
-    ),
-    report: (
-      <form onSubmit={async e => {
-        e.preventDefault();
-        await fetch('/api/student/report', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ /* ... */ }) });
-        setMsg('Report submitted!');
-        setShow('');
-      }}>
-        <input placeholder="Report Title" required style={{ width: '100%', margin: 4 }} />
-        <button type="submit" style={{ width: '100%', margin: 4 }}>Submit Report</button>
-      </form>
-    ),
-    weekly: (
-      <form onSubmit={async e => {
-        e.preventDefault();
-        await fetch('/api/student/report', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ /* ... */ }) });
-        setMsg('Weekly report submitted!');
-        setShow('');
-      }}>
-        <input placeholder="Week #" required style={{ width: '100%', margin: 4 }} />
-        <button type="submit" style={{ width: '100%', margin: 4 }}>Submit Weekly Report</button>
-      </form>
-    ),
   };
 
   return (
-    <div className="dashboard">
-      <h1>Welcome, {studentData.name}</h1>
-      <Profile student={studentData} />
-      <h2>Internship Records</h2>
-      <ul>
-        {studentData.internshipRecords.map(record => (
-          <li key={record.id}>
-            {record.position} at {record.company} for {record.duration}
-          </li>
-        ))}
-      </ul>
-      <div style={{ maxWidth: 400, margin: '40px auto' }}>
-        <h2>Student Dashboard</h2>
-        <div style={{ border: '1px solid #ccc', padding: 10, marginBottom: 10 }}>
-          <b>Name:</b> {profile.name}<br />
-          <b>Email:</b> {profile.email}<br />
-          <b>Batch:</b> {profile.batch}
+    <div style={{ display: 'flex', minHeight: '100vh', width: '100vw', background: '#f7f6f3' }}>
+      {/* Sidebar */}
+      <aside style={{ width: 220, background: '#fff', borderRight: '1px solid #e3e3e3', padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <h2 style={{ fontSize: 20, margin: 0, marginBottom: 24 }}>Menu</h2>
+        <button onClick={() => navigate('/weekly-report')} style={{ width: '100%' }}>Add/Submit Report</button>
+        {/* Add more sidebar actions here if needed */}
+      </aside>
+      {/* Main content */}
+      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', padding: 32 }}>
+        <div className="card" style={{ maxWidth: 600, width: '100%' }}>
+          <h2 style={{ textAlign: 'center', marginBottom: 24 }}>Welcome, {studentData.name}</h2>
+          <div style={{ marginBottom: 16 }}>
+            <b>Name:</b> {studentData.name}<br />
+            <b>Email:</b> {studentData.email}
+          </div>
+          {/* Reports list can be added here if needed */}
         </div>
-        <button onClick={() => setShow('internship')} style={{ width: '100%', margin: 4 }}>Add Internship</button>
-        <button onClick={() => setShow('report')} style={{ width: '100%', margin: 4 }}>Add Report</button>
-        <button onClick={() => setShow('weekly')} style={{ width: '100%', margin: 4 }}>Add Weekly Report</button>
-        {show && <div style={{ marginTop: 10 }}>{forms[show]}</div>}
-        {msg && <div style={{ color: 'green', marginTop: 10 }}>{msg}</div>}
-      </div>
+      </main>
     </div>
   );
 };
 
 export default Dashboard;
+// The sidebar now redirects to a new WeeklyReport page for report submission.
