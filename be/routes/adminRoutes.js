@@ -1,10 +1,10 @@
 import express from "express";
 import { Faculty, Student } from "../models/User.js";
 import { InternshipRecord } from "../models/Record.js";
+import { Company } from "../models/Company.js";
 
 const router = express.Router();
 
-// Assign batch to faculty
 router.put("/faculty/:facultyId/assign", async (req, res) => {
   const faculty = await Faculty.findByIdAndUpdate(
     req.params.facultyId,
@@ -14,19 +14,16 @@ router.put("/faculty/:facultyId/assign", async (req, res) => {
   res.json(faculty);
 });
 
-// View all students
 router.get("/students", async (req, res) => {
   const students = await Student.find();
   res.json(students);
 });
 
-// View students by internshipType
 router.get("/students/internshipType/:type", async (req, res) => {
   const records = await InternshipRecord.find({ internshipType: req.params.type }).populate("student");
   res.json(records);
 });
 
-// View companies
 router.get("/companies", async (req, res) => {
   const companies = await Company.find();
   res.json(companies);
