@@ -26,4 +26,10 @@ router.get("/students/internshipType/:type", async (req, res) => {
   res.json(records);
 });
 
+// View companies
+router.get("/companies", async (req, res) => {
+  const companies = await Company.find();
+  res.json(companies);
+});
+
 export default router;

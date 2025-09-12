@@ -20,34 +20,44 @@ router.get("/students/:facultyId", async (req, res) => {
   }
 });
 
-// View students by internshipType
+// View students by internshipType (only from assigned batch)
 router.get("/students/internshipType/:type", async (req, res) => {
+  const faculty = await Faculty.findById(req.query.facultyId);
   const records = await InternshipRecord.find({ internshipType: req.params.type }).populate("student");
-  res.json(records);
+
+  const filtered = records.filter(r => r.student?.batch === faculty.assignedBatch);
+  res.json(filtered);
 });
 
-// View students by ID
+// View student by ID (only if in assigned batch)
 router.get("/students/id/:studentId", async (req, res) => {
+  const faculty = await Faculty.findById(req.query.facultyId);
   const student = await Student.findById(req.params.studentId);
-  if (!student) {
-    return res.status(404).json({ message: "Student not found" });
+
+  if (!student || student.batch !== faculty.assignedBatch) {
+    return res.status(403).json({ message: "Access denied" });
   }
+
   res.json(student);
 });
 
-// View Weekly reports of a student (only submitted)
+// View submitted reports of a student (only if in assigned batch)
 router.get("/reports/:studentId", async (req, res) => {
-  try {
-    // Find reports for the student
-    const reports = await Report.find({ student: req.params.studentId });
-    const submittedReports = reports.filter(r =>
-      r.weeklyReports.some(w => w.submittedAt)
-    );
-    res.json(submittedReports);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+  const faculty = await Faculty.findById(req.query.facultyId);
+  const student = await Student.findById(req.params.studentId);
+
+  if (!student || student.batch !== faculty.assignedBatch) {
+    return res.status(403).json({ message: "Access denied" });
   }
+
+  const reports = await Report.find({ student: req.params.studentId });
+  const submitted = reports.filter(r =>
+    r.weeklyReports.some(w => w.submittedAt)
+  );
+
+  res.json(submitted);
 });
+
 
 router.put("/report/grade/:reportId", async (req, res) => {
   const { weekNumber, grade } = req.body;
