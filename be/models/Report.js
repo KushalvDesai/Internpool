@@ -3,6 +3,9 @@ import mongoose from 'mongoose';
 
 const weeklyReportSchema = new mongoose.Schema({
   weekNumber: Number,
+  fromdate: Date,
+  todate: Date,
+  workingHours: Number,
   questions: [
     {
       question: String,
@@ -18,6 +21,8 @@ const reportSchema = new mongoose.Schema({
   record: { type: mongoose.Schema.Types.ObjectId, ref: 'InternshipRecord', required: true },
   student: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   faculty: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company', required: true },
+  technology: { type: String, required: true },
   studentID: { type: String, required: true },
   facultyID: { type: String, required: true },
   weeklyReports: {

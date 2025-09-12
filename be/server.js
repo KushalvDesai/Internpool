@@ -7,12 +7,16 @@ import studentRoutes from "./routes/studentRoutes.js";
 import facultyRoutes from "./routes/facultyRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import companyRoutes from "./routes/companyRoutes.js";
 
 dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:3001",
+  credentials: true,
+}));
 app.use(express.json());
 
 // DB Connection
@@ -25,6 +29,7 @@ app.use("/student", studentRoutes);
 app.use("/faculty", facultyRoutes);
 app.use("/admin", adminRoutes);
 app.use("/auth", authRoutes);
+app.use("/api/company", companyRoutes);
 
 app.get("/", (req, res) => res.send("API running..."));
 
