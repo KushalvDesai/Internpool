@@ -15,6 +15,7 @@ const weeklyReportSchema = new mongoose.Schema({
   submittedAt: { type: Date, default: Date.now },
   gradedAt: Date,
   grade: { type: Number, min: 0, max: 10 },
+  remarks: String
 });
 
 const reportSchema = new mongoose.Schema({

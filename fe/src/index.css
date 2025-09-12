@@ -6,7 +6,7 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
+  color: black;
   background-color: #242424;
 
   font-synthesis: none;
@@ -26,15 +26,34 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
   min-height: 100vh;
+
+  background: #f7f6f3;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  color: #222;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+#root {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+input, button, textarea, select {
+  font-family: inherit;
+  border-radius: 8px;
+  border: 1px solid #e3e3e3;
+  background: #fff;
+  padding: 10px;
+  margin: 6px 0;
+  box-sizing: border-box;
+  outline: none;
+  transition: border 0.2s;
+}
+
+input:focus, textarea:focus, select:focus {
+  border: 1.5px solid #a3a3a3;
 }
 
 button {
@@ -44,16 +63,45 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+
+  background: #ececec;
+  color: #222;
+  border: none;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: background 0.2s;
 }
 button:hover {
-  border-color: #646cff;
+  background: #e3e3e3;
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #ececec;
+  padding: 32px 24px;
+  margin: 24px auto;
+  max-width: 400px;
+  width: 100%;
+  border: 1px solid #e3e3e3;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 600;
+  color: #222;
+  margin-top: 0;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: #f7f6f3;
+}
+::-webkit-scrollbar-thumb {
+  background: #e3e3e3;
+  border-radius: 8px;
 }
 
 @media (prefers-color-scheme: light) {
