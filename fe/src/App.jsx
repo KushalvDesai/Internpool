@@ -5,6 +5,7 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import WeeklyReport from './components/WeeklyReport';
 import InternshipDetail from './components/InternshipDetail';
+import AddInternship from './components/AddInternship';
 
 const App = () => (
   <Router>
@@ -14,6 +15,7 @@ const App = () => (
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/weekly-report" element={<WeeklyReport />} />
       <Route path="/internship/:id" element={<InternshipDetail />} />
+      <Route path="/add-internship" element={<AddInternship />} />
     </Routes>
   </Router>
 );

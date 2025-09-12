@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-
-const weeks = [1, 2, 3, 4];
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 
 const initialForm = {
   assignments: '',
@@ -14,16 +12,30 @@ const initialForm = {
 const InternshipDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  // Dummy internship data (replace with API call as needed)
-  const internship = {
+  const location = useLocation();
+  // Get internship data from location.state or fallback to dummy
+  const internship = location.state && location.state.internship ? location.state.internship : {
     id,
     company: id === '1' ? 'Tech Corp' : 'Web Solutions',
     position: 'Intern',
-    duration: id === '1' ? '3 months' : '6 months',
+    duration: '4',
+    technology: 'React',
+    type: 'Offline',
+    workingHours: '35',
   };
+  const numWeeks = parseInt(internship.duration) || 4;
+  const weeks = Array.from({ length: numWeeks }, (_, i) => i + 1);
   // Store reports for each week
-  const [reports, setReports] = useState({ 1: { ...initialForm }, 2: { ...initialForm }, 3: { ...initialForm }, 4: { ...initialForm } });
-  const [submitted, setSubmitted] = useState({ 1: false, 2: false, 3: false, 4: false });
+  const [reports, setReports] = useState(() => {
+    const obj = {};
+    weeks.forEach(w => { obj[w] = { ...initialForm }; });
+    return obj;
+  });
+  const [submitted, setSubmitted] = useState(() => {
+    const obj = {};
+    weeks.forEach(w => { obj[w] = false; });
+    return obj;
+  });
   const [currentWeek, setCurrentWeek] = useState(1);
   const [msg, setMsg] = useState('');
 
@@ -105,7 +117,10 @@ const InternshipDetail = () => {
         <div className="card" style={{ maxWidth: 600, width: '100%' }}>
           <h2 style={{ textAlign: 'center', marginBottom: 16 }}>{internship.company} - {internship.position}</h2>
           <div style={{ marginBottom: 16 }}>
-            <b>Duration:</b> {internship.duration}
+            <b>Duration:</b> {internship.duration} weeks<br />
+            <b>Technology:</b> {internship.technology}<br />
+            <b>Type:</b> {internship.type}<br />
+            <b>Working Hours/week:</b> {internship.workingHours}
           </div>
           <h3 style={{ textAlign: 'center', marginBottom: 16 }}>Weekly Report - Week {currentWeek}</h3>
           <form style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -132,4 +147,4 @@ const InternshipDetail = () => {
 };
 
 export default InternshipDetail;
-// This page allows viewing, editing, saving, and submitting weekly reports for each internship individually.
+// InternshipDetail now uses the internship's duration to determine the number of weeks for weekly reports.
