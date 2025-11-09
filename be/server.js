@@ -8,6 +8,7 @@ import facultyRoutes from "./routes/facultyRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import companyRoutes from "./routes/companyRoutes.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 dotenv.config();
 const app = express();
@@ -25,14 +26,17 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err => console.error("MongoDB connection error:", err.message));
 
 // Routes
+app.use("/auth", authRoutes);
 app.use("/student", studentRoutes);
 app.use("/faculty", facultyRoutes);
 app.use("/admin", adminRoutes);
-app.use("/auth", authRoutes);
 app.use("/api/company", companyRoutes);
 
 app.get("/", (req, res) => res.send("API running..."));
 
+// Error handling middleware (must be last)
+app.use(errorHandler);
+
 // Start server
-const PORT = process.env.PORT;
-app.listen(PORT, () => console.log(`Server running on port https://localhost:${PORT}`));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
