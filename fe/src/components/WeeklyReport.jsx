@@ -1,69 +1,148 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-const weeks = [1, 2, 3, 4];
-
-const initialForm = {
-  studentID: '',
-  studentName: '',
-  sem: '',
-  div: '',
-  internshipType: '',
-  weekNo: '',
-  from: '',
-  to: '',
-  hours: '',
-  company: '',
-  technology: '',
-  assignments: '',
-  rewarding: '',
-  difficult: '',
-  upcoming: '',
-  learning: '',
-};
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { api } from '../lib/api';
 
 const WeeklyReport = () => {
-  const [currentWeek, setCurrentWeek] = useState(1);
-  const [reports, setReports] = useState({ 1: { ...initialForm, weekNo: 1 }, 2: { ...initialForm, weekNo: 2 }, 3: { ...initialForm, weekNo: 3 }, 4: { ...initialForm, weekNo: 4 } });
-  const [msg, setMsg] = useState('');
+  const { reportId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [report, setReport] = useState(null);
+  const [currentWeek, setCurrentWeek] = useState(1);
+  const [form, setForm] = useState({
+    weekNumber: 1,
+    fromdate: '',
+    todate: '',
+    workingHours: '',
+    questions: [
+      { question: 'Describe your principle assignments and responsibilities for this period.', answer: '' },
+      { question: 'What experiences were particularly rewarding during this report period?', answer: '' },
+      { question: 'What experiences were particularly difficult during this report period?', answer: '' },
+      { question: 'Describe principal tasks and duties to be performed and accomplishments during the upcoming week.', answer: '' },
+      { question: 'Learning Outcomes: (in brief)', answer: '' },
+    ],
+  });
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [msg, setMsg] = useState('');
 
-  // Handle input changes for the current week
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setReports(prev => ({
-      ...prev,
-      [currentWeek]: { ...prev[currentWeek], [name]: value },
-    }));
-  };
-
-  // Save draft for the current week
-  const handleSave = () => {
-    setMsg(`Week ${currentWeek} report saved!`);
-    setTimeout(() => setMsg(''), 1500);
-  };
-
-  // Submit all 4 reports
-  const handleSubmitAll = async () => {
-    for (let w = 1; w <= 4; w++) {
-      await fetch('/api/student/report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(reports[w]),
-      });
+  useEffect(() => {
+    const fetchReport = async () => {
+      try {
+        setLoading(true);
+        const reports = await api.getStudentReports();
+        const foundReport = reports.find(r => r._id === reportId);
+        if (!foundReport) {
+          setError('Report not found');
+          return;
+        }
+        setReport(foundReport);
+        const existingWeek = foundReport.weeklyReports?.find(w => w.weekNumber === currentWeek);
+        if (existingWeek) {
+          setForm({
+            weekNumber: existingWeek.weekNumber,
+            fromdate: existingWeek.fromdate ? new Date(existingWeek.fromdate).toISOString().split('T')[0] : '',
+            todate: existingWeek.todate ? new Date(existingWeek.todate).toISOString().split('T')[0] : '',
+            workingHours: existingWeek.workingHours || '',
+            questions: existingWeek.questions || form.questions,
+          });
+        }
+      } catch (err) {
+        setError(err.message || 'Failed to load report');
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (reportId) {
+      fetchReport();
     }
-    navigate('/dashboard');
+  }, [reportId]);
+
+  useEffect(() => {
+    if (report) {
+      const existingWeek = report.weeklyReports?.find(w => w.weekNumber === currentWeek);
+      if (existingWeek) {
+        setForm({
+          weekNumber: existingWeek.weekNumber,
+          fromdate: existingWeek.fromdate ? new Date(existingWeek.fromdate).toISOString().split('T')[0] : '',
+          todate: existingWeek.todate ? new Date(existingWeek.todate).toISOString().split('T')[0] : '',
+          workingHours: existingWeek.workingHours || '',
+          questions: existingWeek.questions || form.questions,
+        });
+      } else {
+        setForm({
+          weekNumber: currentWeek,
+          fromdate: '',
+          todate: '',
+          workingHours: '',
+          questions: form.questions.map(q => ({ ...q, answer: '' })),
+        });
+      }
+    }
+  }, [currentWeek, report]);
+
+  const handleChange = (e, index) => {
+    if (index !== undefined) {
+      const newQuestions = [...form.questions];
+      newQuestions[index].answer = e.target.value;
+      setForm({ ...form, questions: newQuestions });
+    } else {
+      setForm({ ...form, [e.target.name]: e.target.value });
+    }
   };
 
-  // Switch to a week for editing
-  const handleWeekSelect = w => {
-    setCurrentWeek(w);
+  const handleSubmit = async () => {
+    if (!form.fromdate || !form.todate || !form.workingHours) {
+      setError('Please fill in all required fields');
+      return;
+    }
+
+    setSubmitting(true);
+    setError('');
     setMsg('');
+
+    try {
+      await api.submitWeeklyReport(reportId, form);
+      setMsg(`Week ${currentWeek} report submitted successfully!`);
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1500);
+    } catch (err) {
+      setError(err.message || 'Failed to submit report');
+    } finally {
+      setSubmitting(false);
+    }
   };
+
+  if (!user) {
+    return null;
+  }
+
+  if (loading) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f7f6f3' }}>
+        <div>Loading...</div>
+      </div>
+    );
+  }
+
+  if (error && !report) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f7f6f3' }}>
+        <div className="card" style={{ maxWidth: 500 }}>
+          <div style={{ color: '#dc2626', marginBottom: 16 }}>{error}</div>
+          <button onClick={() => navigate('/dashboard')}>Back to Dashboard</button>
+        </div>
+      </div>
+    );
+  }
+
+  const weeks = [1, 2, 3, 4, 5, 6];
+  const submittedWeeks = report?.weeklyReports?.map(w => w.weekNumber) || [];
 
   return (
     <div style={{ minHeight: '100vh', background: '#f7f6f3' }}>
-      {/* Sticky Sidebar */}
       <aside
         style={{
           position: 'fixed',
@@ -78,13 +157,14 @@ const WeeklyReport = () => {
           flexDirection: 'column',
           gap: 16,
           zIndex: 100,
+          overflowY: 'auto',
         }}
       >
         <h2 style={{ fontSize: 20, margin: 0, marginBottom: 24 }}>Weekly Reports</h2>
         {weeks.map(w => (
           <button
             key={w}
-            onClick={() => handleWeekSelect(w)}
+            onClick={() => setCurrentWeek(w)}
             style={{
               width: '100%',
               background: currentWeek === w ? '#ececec' : '#fff',
@@ -93,99 +173,102 @@ const WeeklyReport = () => {
               marginBottom: 6,
               borderRadius: 8,
               cursor: 'pointer',
+              padding: 12,
+              color: submittedWeeks.includes(w) ? '#16a34a' : '#222',
             }}
           >
-            Week {w} {Object.values(reports[w]).some(val => val) ? '✓' : ''}
+            Week {w} {submittedWeeks.includes(w) ? '✓' : ''}
           </button>
         ))}
         <button
-          onClick={handleSubmitAll}
-          style={{ marginTop: 24, background: '#222', color: '#fff', borderRadius: 8, padding: '10px 0', fontWeight: 600 }}
+          onClick={() => navigate('/dashboard')}
+          style={{ marginTop: 24, borderRadius: 8, padding: '10px 0', fontWeight: 600 }}
         >
-          Submit All Reports
+          Back to Dashboard
         </button>
       </aside>
-      {/* Main content with left margin */}
-      <main
-        style={{
-          marginLeft: 220,
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <div className="card" style={{ maxWidth: 800, width: '100%' }}>
-          <h2 style={{ textAlign: 'center', marginBottom: 16 }}>Weekly Internship Report - Week {currentWeek}</h2>
-          <form style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+
+      <main style={{ marginLeft: 220, minHeight: '100vh', padding: 20 }}>
+        <div className="card" style={{ maxWidth: 800, width: '100%', margin: '0 auto' }}>
+          <h2 style={{ textAlign: 'center', marginBottom: 16 }}>
+            Weekly Report - Week {currentWeek}
+          </h2>
+          {report && (
+            <div style={{ marginBottom: 16, fontSize: 14, color: '#555' }}>
+              <b>Company:</b> {report.company?.name || 'Unknown'} | <b>Technology:</b> {report.technology}
+            </div>
+          )}
+
+          {error && <div style={{ color: '#dc2626', fontSize: 13, padding: 8, background: '#fee', borderRadius: 6, marginBottom: 16 }}>{error}</div>}
+          {msg && <div style={{ color: '#16a34a', fontSize: 13, padding: 8, background: '#dcfce7', borderRadius: 6, marginBottom: 16 }}>{msg}</div>}
+
+          {submittedWeeks.includes(currentWeek) && (
+            <div style={{ color: '#16a34a', fontSize: 13, padding: 8, background: '#dcfce7', borderRadius: 6, marginBottom: 16 }}>
+              This week's report has already been submitted.
+            </div>
+          )}
+
+          <form style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <div style={{ display: 'flex', gap: 8 }}>
               <div style={{ flex: 1 }}>
-                <label>Student ID</label>
-                <input name="studentID" value={reports[currentWeek].studentID} onChange={handleChange} required />
-              </div>
-              <div style={{ flex: 2 }}>
-                <label>Student Name</label>
-                <input name="studentName" value={reports[currentWeek].studentName} onChange={handleChange} required />
-              </div>
-            </div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <div style={{ flex: 1 }}>
-                <label>Sem.</label>
-                <input name="sem" value={reports[currentWeek].sem} onChange={handleChange} required />
+                <label>From Date</label>
+                <input
+                  name="fromdate"
+                  type="date"
+                  value={form.fromdate}
+                  onChange={handleChange}
+                  required
+                  disabled={submitting || submittedWeeks.includes(currentWeek)}
+                />
               </div>
               <div style={{ flex: 1 }}>
-                <label>Div.</label>
-                <input name="div" value={reports[currentWeek].div} onChange={handleChange} required />
+                <label>To Date</label>
+                <input
+                  name="todate"
+                  type="date"
+                  value={form.todate}
+                  onChange={handleChange}
+                  required
+                  disabled={submitting || submittedWeeks.includes(currentWeek)}
+                />
               </div>
-              <div style={{ flex: 2 }}>
-                <label>Type of Internship</label>
-                <input name="internshipType" value={reports[currentWeek].internshipType} onChange={handleChange} required />
-              </div>
-            </div>
-            <div style={{ display: 'flex', gap: 8 }}>
               <div style={{ flex: 1 }}>
-                <label>Week No.</label>
-                <input name="weekNo" value={currentWeek} readOnly />
-              </div>
-              <div style={{ flex: 2 }}>
-                <label>From</label>
-                <input name="from" type="date" value={reports[currentWeek].from} onChange={handleChange} required />
-              </div>
-              <div style={{ flex: 2 }}>
-                <label>To</label>
-                <input name="to" type="date" value={reports[currentWeek].to} onChange={handleChange} required />
-              </div>
-              <div style={{ flex: 2 }}>
-                <label>Working Hours / week</label>
-                <input name="hours" value={reports[currentWeek].hours} onChange={handleChange} required />
+                <label>Working Hours</label>
+                <input
+                  name="workingHours"
+                  type="number"
+                  value={form.workingHours}
+                  onChange={handleChange}
+                  required
+                  disabled={submitting || submittedWeeks.includes(currentWeek)}
+                />
               </div>
             </div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <div style={{ flex: 2 }}>
-                <label>Company Name</label>
-                <input name="company" value={reports[currentWeek].company} onChange={handleChange} required />
+
+            {form.questions.map((q, index) => (
+              <div key={index}>
+                <label>{q.question}</label>
+                <textarea
+                  value={q.answer}
+                  onChange={(e) => handleChange(e, index)}
+                  required
+                  disabled={submitting || submittedWeeks.includes(currentWeek)}
+                  style={{ minHeight: 80 }}
+                />
               </div>
-              <div style={{ flex: 2 }}>
-                <label>Technology worked on</label>
-                <input name="technology" value={reports[currentWeek].technology} onChange={handleChange} required />
-              </div>
-            </div>
-            <label>Describe your principle assignments and responsibilities for this period.</label>
-            <textarea name="assignments" value={reports[currentWeek].assignments} onChange={handleChange} required style={{ minHeight: 40 }} />
-            <label>What experiences were particularly rewarding during this report period?</label>
-            <textarea name="rewarding" value={reports[currentWeek].rewarding} onChange={handleChange} required style={{ minHeight: 40 }} />
-            <label>What experiences were particularly difficult during this report period?</label>
-            <textarea name="difficult" value={reports[currentWeek].difficult} onChange={handleChange} required style={{ minHeight: 40 }} />
-            <label>Describe principal tasks and duties to be performed and accomplishments during the upcoming week.</label>
-            <textarea name="upcoming" value={reports[currentWeek].upcoming} onChange={handleChange} required style={{ minHeight: 40 }} />
-            <label>Learning Outcomes: (in brief)</label>
-            <textarea name="learning" value={reports[currentWeek].learning} onChange={handleChange} required style={{ minHeight: 40 }} />
-            <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-              <button type="button" onClick={handleSave} style={{ flex: 1 }}>Save</button>
-              <button type="button" onClick={() => setReports(prev => ({ ...prev, [currentWeek]: { ...initialForm, weekNo: currentWeek } }))} style={{ flex: 1, background: '#f7f6f3' }}>Clear</button>
-            </div>
+            ))}
+
+            {!submittedWeeks.includes(currentWeek) && (
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={submitting}
+                style={{ marginTop: 12, background: '#222', color: '#fff' }}
+              >
+                {submitting ? 'Submitting...' : 'Submit Week ' + currentWeek}
+              </button>
+            )}
           </form>
-          {msg && <div style={{ color: 'green', marginTop: 10 }}>{msg}</div>}
         </div>
       </main>
     </div>
@@ -193,4 +276,3 @@ const WeeklyReport = () => {
 };
 
 export default WeeklyReport;
-// This page provides a sidebar to navigate, view, edit, and save weekly reports before submitting all at once.
