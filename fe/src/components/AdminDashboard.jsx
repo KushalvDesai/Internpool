@@ -68,6 +68,9 @@ const AdminDashboard = () => {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <h2 style={{ margin: 0 }}>Admin Dashboard - {user.fname} {user.lname}</h2>
             <div style={{ display: 'flex', gap: 8 }}>
+              <Link to="/companies" style={{ textDecoration: 'none' }}>
+                <button style={{ fontSize: 12, padding: '6px 12px' }}>Companies</button>
+              </Link>
               <Link to="/profile" style={{ textDecoration: 'none' }}>
                 <button style={{ fontSize: 12, padding: '6px 12px' }}>Profile</button>
               </Link>

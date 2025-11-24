@@ -13,6 +13,7 @@ const WeeklyReport = lazy(() => import('./components/WeeklyReport'));
 const InternshipDetail = lazy(() => import('./components/InternshipDetail'));
 const AddInternship = lazy(() => import('./components/AddInternship'));
 const Profile = lazy(() => import('./components/Profile'));
+const CompanyList = lazy(() => import('./components/CompanyList'));
 
 const LoadingSpinner = () => (
   <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)' }}>
@@ -57,6 +58,14 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/companies"
+            element={
+              <ProtectedRoute>
+                <CompanyList />
               </ProtectedRoute>
             }
           />
