@@ -94,17 +94,6 @@ The application will be available at:
 - **Frontend**: http://localhost:5173
 - **Backend API**: http://localhost:3000
 
-
-## 🔐 Authentication & Authorization
-
-The application implements role-based access control (RBAC) with three user roles:
-
-- **Student**: Can manage their internships and submit weekly reports
-- **Faculty**: Can monitor assigned students and grade reports
-- **Admin**: Has full system access for user and company management
-
-Authentication is handled via JWT tokens stored in localStorage.
-
 ## 🔌 API Endpoints
 
 ### Authentication
@@ -138,14 +127,6 @@ Authentication is handled via JWT tokens stored in localStorage.
 - `POST /api/company` - Create new company
 - `PUT /api/company/:id` - Update company
 - `DELETE /api/company/:id` - Delete company
-
-## 🎨 UI Features
-
-- **Dark/Light Mode**: Toggle between themes using ThemeContext
-- **Responsive Design**: Mobile-friendly interface built with TailwindCSS
-- **Protected Routes**: Role-based route protection
-- **Lazy Loading**: Code-splitting for optimal performance
-- **Animated Backgrounds**: Enhanced UI with motion effects
 
 ## 🤝 Contributing
 
