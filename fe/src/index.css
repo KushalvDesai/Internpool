@@ -1,40 +1,58 @@
 @import 'tailwindcss';
 
-body {
-  background: #f7f6f3 !important;
-}
-
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: black;
-  background-color: white;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --background: #f2f3f5;
+  --surface: #ffffff;
+  --surface-muted: #f7f7f9;
+  --text-primary: #1e1f22;
+  --text-muted: #4b4f58;
+  --border-color: #dcdfe4;
+  --button-bg: #e3e5e8;
+  --button-bg-hover: #d7d8db;
+  --button-text: #1e1f22;
+  --card-shadow: rgba(15, 23, 42, 0.08);
+  --scrollbar-track: #e3e5e8;
+  --scrollbar-thumb: #c7cad1;
+}
+
+[data-theme='dark'] {
+  --background: #313338;
+  --surface: #2b2d31;
+  --surface-muted: #1f2125;
+  --text-primary: #f3f4f5;
+  --text-muted: #b5bac1;
+  --border-color: #1f2023;
+  --button-bg: #5865f2;
+  --button-bg-hover: #4752c4;
+  --button-text: #f3f4f5;
+  --card-shadow: rgba(0, 0, 0, 0.3);
+  --scrollbar-track: #1f2125;
+  --scrollbar-thumb: #555b65;
 }
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--button-bg);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--button-bg-hover);
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-
-  background: #f7f6f3;
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-  color: #222;
+  background: var(--background);
+  color: var(--text-primary);
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 #root {
@@ -44,79 +62,74 @@ body {
   justify-content: center;
 }
 
-input, button, textarea, select {
+input,
+button,
+textarea,
+select {
   font-family: inherit;
   border-radius: 8px;
-  border: 1px solid #e3e3e3;
-  background: #fff;
+  border: 1px solid var(--border-color);
+  background: var(--surface);
   padding: 10px;
   margin: 6px 0;
   box-sizing: border-box;
   outline: none;
-  transition: border 0.2s;
+  color: var(--text-primary);
+  transition: border 0.2s, background 0.2s, color 0.2s;
 }
 
-input:focus, textarea:focus, select:focus {
-  border: 1.5px solid #a3a3a3;
+input:focus,
+textarea:focus,
+select:focus {
+  border: 1.5px solid var(--button-bg);
 }
 
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: none;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-
-  background: #ececec;
-  color: #222;
-  border: none;
+  background: var(--button-bg);
+  color: var(--button-text);
   cursor: pointer;
   transition: background 0.2s;
 }
 button:hover {
-  background: #e3e3e3;
+  background: var(--button-bg-hover);
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 3px solid var(--button-bg-hover);
 }
 
 .card {
-  background: #fff;
+  background: var(--surface);
   border-radius: 12px;
-  box-shadow: 0 2px 8px #ececec;
+  box-shadow: 0 12px 24px var(--card-shadow);
   padding: 32px 24px;
   margin: 24px auto;
   max-width: 400px;
   width: 100%;
-  border: 1px solid #e3e3e3;
+  border: 1px solid var(--border-color);
+  transition: background 0.3s ease, color 0.3s ease, border 0.3s ease;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   font-weight: 600;
-  color: #222;
+  color: var(--text-primary);
   margin-top: 0;
 }
 
 ::-webkit-scrollbar {
   width: 8px;
-  background: #f7f6f3;
+  background: var(--scrollbar-track);
 }
 ::-webkit-scrollbar-thumb {
-  background: #e3e3e3;
+  background: var(--scrollbar-thumb);
   border-radius: 8px;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
 }

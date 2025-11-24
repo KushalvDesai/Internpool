@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import ThemeToggle from './components/ThemeToggle';
 
 const Signup = lazy(() => import('./components/Signup'));
 const Login = lazy(() => import('./components/Login'));
@@ -14,7 +15,7 @@ const AddInternship = lazy(() => import('./components/AddInternship'));
 const Profile = lazy(() => import('./components/Profile'));
 
 const LoadingSpinner = () => (
-  <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f7f6f3' }}>
+  <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)' }}>
     <div>Loading...</div>
   </div>
 );
@@ -86,6 +87,7 @@ const App = () => (
         </Routes>
       </Suspense>
     </Router>
+    <ThemeToggle />
   </AuthProvider>
 );
 

@@ -39,7 +39,7 @@ const Profile = () => {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f7f6f3' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)' }}>
         <div>Loading...</div>
       </div>
     );
@@ -48,7 +48,7 @@ const Profile = () => {
   const displayUser = profile || user;
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f7f6f3', padding: 20 }}>
+    <div style={{ minHeight: '100vh', background: 'var(--background)', padding: 20 }}>
       <div style={{ maxWidth: 800, margin: '0 auto' }}>
         <div className="card" style={{ marginBottom: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
@@ -84,7 +84,7 @@ const Profile = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div>
               <h3 style={{ marginBottom: 12 }}>Personal Information</h3>
-              <div style={{ fontSize: 14, color: '#555', display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div style={{ fontSize: 14, color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <div><b>Name:</b> {displayUser.fname} {displayUser.lname}</div>
                 <div><b>Email:</b> {displayUser.email}</div>
                 <div><b>Role:</b> {displayUser.role}</div>
@@ -99,7 +99,7 @@ const Profile = () => {
             {user.role === 'student' && (
               <div>
                 <h3 style={{ marginBottom: 12 }}>Account Created</h3>
-                <div style={{ fontSize: 14, color: '#555' }}>
+                <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>
                   {displayUser.createdAt ? new Date(displayUser.createdAt).toLocaleDateString() : 'N/A'}
                 </div>
               </div>

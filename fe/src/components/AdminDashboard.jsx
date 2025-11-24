@@ -62,7 +62,7 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f7f6f3', padding: 20 }}>
+    <div style={{ minHeight: '100vh', background: 'var(--background)', padding: 20 }}>
       <div style={{ maxWidth: 1400, margin: '0 auto' }}>
         <div className="card" style={{ marginBottom: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
@@ -76,7 +76,7 @@ const AdminDashboard = () => {
               </button>
             </div>
           </div>
-          <div style={{ fontSize: 14, color: '#555' }}>
+          <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>
             <b>Email:</b> {user.email}
             {user.adminID && <><br /><b>Admin ID:</b> {user.adminID}</>}
           </div>
@@ -94,8 +94,8 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('students')}
               style={{
                 padding: '8px 16px',
-                background: activeTab === 'students' ? '#ececec' : '#f9f9f9',
-                border: '1px solid #e3e3e3',
+                background: activeTab === 'students' ? 'var(--surface-muted)' : 'var(--surface)',
+                border: `1px solid var(--border-color)`,
                 borderRadius: 6,
                 cursor: 'pointer',
               }}
@@ -106,8 +106,8 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('faculty')}
               style={{
                 padding: '8px 16px',
-                background: activeTab === 'faculty' ? '#ececec' : '#f9f9f9',
-                border: '1px solid #e3e3e3',
+                background: activeTab === 'faculty' ? 'var(--surface-muted)' : 'var(--surface)',
+                border: `1px solid var(--border-color)`,
                 borderRadius: 6,
                 cursor: 'pointer',
               }}
@@ -118,8 +118,8 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('companies')}
               style={{
                 padding: '8px 16px',
-                background: activeTab === 'companies' ? '#ececec' : '#f9f9f9',
-                border: '1px solid #e3e3e3',
+                background: activeTab === 'companies' ? 'var(--surface-muted)' : 'var(--surface)',
+                border: `1px solid var(--border-color)`,
                 borderRadius: 6,
                 cursor: 'pointer',
               }}
@@ -130,8 +130,8 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('internships')}
               style={{
                 padding: '8px 16px',
-                background: activeTab === 'internships' ? '#ececec' : '#f9f9f9',
-                border: '1px solid #e3e3e3',
+                background: activeTab === 'internships' ? 'var(--surface-muted)' : 'var(--surface)',
+                border: `1px solid var(--border-color)`,
                 borderRadius: 6,
                 cursor: 'pointer',
               }}
@@ -148,22 +148,22 @@ const AdminDashboard = () => {
           {!loading && activeTab === 'students' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {students.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: 40, color: '#666' }}>No students found</div>
+                <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>No students found</div>
               ) : (
                 students.map(student => (
                   <div
                     key={student._id}
                     style={{
-                      background: '#f9f9f9',
+                      background: 'var(--surface-muted)',
                       borderRadius: 8,
                       padding: 16,
-                      border: '1px solid #e3e3e3',
+                      border: `1px solid var(--border-color)`,
                     }}
                   >
                     <div style={{ fontWeight: 600, marginBottom: 8 }}>
                       {student.fname} {student.lname}
                     </div>
-                    <div style={{ fontSize: 13, color: '#555' }}>
+                    <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
                       <b>Email:</b> {student.email} | <b>Student ID:</b> {student.studentID} | <b>Batch:</b> {student.batch}
                     </div>
                   </div>
@@ -175,22 +175,22 @@ const AdminDashboard = () => {
           {!loading && activeTab === 'faculty' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {faculty.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: 40, color: '#666' }}>No faculty found</div>
+                <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>No faculty found</div>
               ) : (
                 faculty.map(f => (
                   <div
                     key={f._id}
                     style={{
-                      background: '#f9f9f9',
+                      background: 'var(--surface-muted)',
                       borderRadius: 8,
                       padding: 16,
-                      border: '1px solid #e3e3e3',
+                      border: `1px solid var(--border-color)`,
                     }}
                   >
                     <div style={{ fontWeight: 600, marginBottom: 8 }}>
                       {f.fname} {f.lname}
                     </div>
-                    <div style={{ fontSize: 13, color: '#555', marginBottom: 12 }}>
+                    <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 12 }}>
                       <b>Email:</b> {f.email} | <b>Faculty ID:</b> {f.facultyID} | <b>Assigned Batch:</b> {f.assignedBatch || 'None'}
                     </div>
                     {selectedFaculty?._id === f._id ? (
@@ -213,7 +213,7 @@ const AdminDashboard = () => {
                             setSelectedFaculty(null);
                             setBatchInput('');
                           }}
-                          style={{ fontSize: 12, padding: '6px 12px', background: '#f7f6f3' }}
+                          style={{ fontSize: 12, padding: '6px 12px', background: 'var(--surface-muted)', color: 'var(--text-primary)' }}
                         >
                           Cancel
                         </button>
@@ -238,20 +238,20 @@ const AdminDashboard = () => {
           {!loading && activeTab === 'companies' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {companies.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: 40, color: '#666' }}>No companies found</div>
+                <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>No companies found</div>
               ) : (
                 companies.map(company => (
                   <div
                     key={company._id}
                     style={{
-                      background: '#f9f9f9',
+                      background: 'var(--surface-muted)',
                       borderRadius: 8,
                       padding: 16,
-                      border: '1px solid #e3e3e3',
+                      border: `1px solid var(--border-color)`,
                     }}
                   >
                     <div style={{ fontWeight: 600, marginBottom: 8 }}>{company.name}</div>
-                    <div style={{ fontSize: 13, color: '#555' }}>
+                    <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
                       <b>Address:</b> {company.address || 'N/A'} | <b>Website:</b> {company.website || 'N/A'} | <b>Verified:</b> {company.verified ? 'Yes' : 'No'}
                     </div>
                   </div>
@@ -263,22 +263,22 @@ const AdminDashboard = () => {
           {!loading && activeTab === 'internships' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {internships.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: 40, color: '#666' }}>No internships found</div>
+                <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>No internships found</div>
               ) : (
                 internships.map(internship => (
                   <div
                     key={internship._id}
                     style={{
-                      background: '#f9f9f9',
+                      background: 'var(--surface-muted)',
                       borderRadius: 8,
                       padding: 16,
-                      border: '1px solid #e3e3e3',
+                      border: `1px solid var(--border-color)`,
                     }}
                   >
                     <div style={{ fontWeight: 600, marginBottom: 8 }}>
                       {internship.student?.fname} {internship.student?.lname} - {internship.company?.name || 'Unknown Company'}
                     </div>
-                    <div style={{ fontSize: 13, color: '#555' }}>
+                    <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
                       <b>Type:</b> {internship.internshipType} | <b>Semester:</b> {internship.semester}
                       {internship.stipend && ` | <b>Stipend:</b> ₹${internship.stipend}`}
                     </div>

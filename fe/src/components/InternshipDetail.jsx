@@ -72,7 +72,7 @@ const InternshipDetail = () => {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f7f6f3' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)' }}>
         <div>Loading...</div>
       </div>
     );
@@ -80,7 +80,7 @@ const InternshipDetail = () => {
 
   if (error && !internship) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f7f6f3' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)' }}>
         <div className="card" style={{ maxWidth: 500 }}>
           <div style={{ color: '#dc2626', marginBottom: 16 }}>{error}</div>
           <button onClick={() => navigate('/dashboard')}>Back to Dashboard</button>
@@ -90,7 +90,7 @@ const InternshipDetail = () => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f7f6f3', padding: 20 }}>
+    <div style={{ minHeight: '100vh', background: 'var(--background)', padding: 20 }}>
       <div style={{ maxWidth: 900, margin: '0 auto' }}>
         <div className="card" style={{ marginBottom: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
@@ -104,7 +104,7 @@ const InternshipDetail = () => {
 
           {error && <div style={{ color: '#dc2626', fontSize: 13, padding: 8, background: '#fee', borderRadius: 6, marginBottom: 16 }}>{error}</div>}
 
-          <div style={{ fontSize: 14, color: '#555', marginBottom: 16 }}>
+          <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 16 }}>
             <div><b>Internship Type:</b> {internship?.internshipType}</div>
             <div><b>Semester:</b> {internship?.semester}</div>
             {internship?.stipend && <div><b>Stipend:</b> ₹{internship.stipend}</div>}
@@ -141,7 +141,7 @@ const InternshipDetail = () => {
               </div>
             ) : (
               <div>
-                <div style={{ marginBottom: 16, color: '#666' }}>
+                <div style={{ marginBottom: 16, color: 'var(--text-muted)' }}>
                   No report created yet. Create a report to start submitting weekly reports.
                 </div>
                 <button

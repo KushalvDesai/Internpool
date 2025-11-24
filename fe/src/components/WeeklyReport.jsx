@@ -121,7 +121,7 @@ const WeeklyReport = () => {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f7f6f3' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)' }}>
         <div>Loading...</div>
       </div>
     );
@@ -129,7 +129,7 @@ const WeeklyReport = () => {
 
   if (error && !report) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f7f6f3' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)' }}>
         <div className="card" style={{ maxWidth: 500 }}>
           <div style={{ color: '#dc2626', marginBottom: 16 }}>{error}</div>
           <button onClick={() => navigate('/dashboard')}>Back to Dashboard</button>
@@ -142,7 +142,7 @@ const WeeklyReport = () => {
   const submittedWeeks = report?.weeklyReports?.map(w => w.weekNumber) || [];
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f7f6f3' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
       <aside
         style={{
           position: 'fixed',
@@ -150,8 +150,8 @@ const WeeklyReport = () => {
           left: 0,
           height: '100vh',
           width: 220,
-          background: '#fff',
-          borderRight: '1px solid #e3e3e3',
+          background: 'var(--surface)',
+          borderRight: `1px solid var(--border-color)`,
           padding: 24,
           display: 'flex',
           flexDirection: 'column',
@@ -167,14 +167,14 @@ const WeeklyReport = () => {
             onClick={() => setCurrentWeek(w)}
             style={{
               width: '100%',
-              background: currentWeek === w ? '#ececec' : '#fff',
+              background: currentWeek === w ? 'var(--surface-muted)' : 'var(--surface)',
               fontWeight: currentWeek === w ? 600 : 400,
-              border: '1px solid #e3e3e3',
+              border: `1px solid var(--border-color)`,
               marginBottom: 6,
               borderRadius: 8,
               cursor: 'pointer',
               padding: 12,
-              color: submittedWeeks.includes(w) ? '#16a34a' : '#222',
+              color: submittedWeeks.includes(w) ? '#16a34a' : 'var(--text-primary)',
             }}
           >
             Week {w} {submittedWeeks.includes(w) ? '✓' : ''}
@@ -194,7 +194,7 @@ const WeeklyReport = () => {
             Weekly Report - Week {currentWeek}
           </h2>
           {report && (
-            <div style={{ marginBottom: 16, fontSize: 14, color: '#555' }}>
+            <div style={{ marginBottom: 16, fontSize: 14, color: 'var(--text-muted)' }}>
               <b>Company:</b> {report.company?.name || 'Unknown'} | <b>Technology:</b> {report.technology}
             </div>
           )}
@@ -263,7 +263,7 @@ const WeeklyReport = () => {
                 type="button"
                 onClick={handleSubmit}
                 disabled={submitting}
-                style={{ marginTop: 12, background: '#222', color: '#fff' }}
+                style={{ marginTop: 12 }}
               >
                 {submitting ? 'Submitting...' : 'Submit Week ' + currentWeek}
               </button>

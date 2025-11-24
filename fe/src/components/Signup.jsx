@@ -78,7 +78,7 @@ const Signup = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f7f6f3', padding: 20 }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)', padding: 20 }}>
       <div className="card" style={{ maxWidth: 450, width: '100%' }}>
         <h2 style={{ textAlign: 'center', marginBottom: 24 }}>Create Account</h2>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -131,7 +131,7 @@ const Signup = () => {
             {loading ? 'Creating account...' : 'Sign Up'}
           </button>
         </form>
-        <button onClick={() => navigate('/login')} style={{ marginTop: 12, background: '#f7f6f3' }}>
+        <button onClick={() => navigate('/login')} style={{ marginTop: 12, background: 'var(--surface-muted)', color: 'var(--text-primary)' }}>
           Already have an account? Login
         </button>
       </div>

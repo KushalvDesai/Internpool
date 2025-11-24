@@ -72,7 +72,7 @@ const AddInternship = () => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f7f6f3', padding: 20 }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)', padding: 20 }}>
       <div className="card" style={{ maxWidth: 500, width: '100%' }}>
         <h2 style={{ textAlign: 'center', marginBottom: 24 }}>Add Internship</h2>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -125,7 +125,7 @@ const AddInternship = () => {
               type="button"
               onClick={() => navigate('/dashboard')}
               disabled={loading}
-              style={{ flex: 1, background: '#f7f6f3' }}
+              style={{ flex: 1, background: 'var(--surface-muted)', color: 'var(--text-primary)' }}
             >
               Cancel
             </button>

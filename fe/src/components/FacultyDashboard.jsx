@@ -61,7 +61,7 @@ const FacultyDashboard = () => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f7f6f3', padding: 20 }}>
+    <div style={{ minHeight: '100vh', background: 'var(--background)', padding: 20 }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <div className="card" style={{ marginBottom: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
@@ -75,7 +75,7 @@ const FacultyDashboard = () => {
               </button>
             </div>
           </div>
-          <div style={{ fontSize: 14, color: '#555' }}>
+          <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>
             <b>Email:</b> {user.email}<br />
             {user.facultyID && <><b>Faculty ID:</b> {user.facultyID}<br /></>}
             {user.assignedBatch && <><b>Assigned Batch:</b> {user.assignedBatch}</>}
@@ -100,7 +100,7 @@ const FacultyDashboard = () => {
             {loading && <div style={{ textAlign: 'center', padding: 20 }}>Loading...</div>}
 
             {!loading && students.length === 0 && (
-              <div style={{ textAlign: 'center', padding: 20, color: '#666' }}>
+              <div style={{ textAlign: 'center', padding: 20, color: 'var(--text-muted)' }}>
                 No students assigned to your batch.
               </div>
             )}
@@ -113,15 +113,15 @@ const FacultyDashboard = () => {
                     onClick={() => handleStudentClick(student)}
                     style={{
                       padding: 12,
-                      background: selectedStudent?._id === student._id ? '#ececec' : '#f9f9f9',
-                      border: '1px solid #e3e3e3',
+                      background: selectedStudent?._id === student._id ? 'var(--surface-muted)' : 'var(--surface)',
+                      border: `1px solid var(--border-color)`,
                       borderRadius: 8,
                       textAlign: 'left',
                       cursor: 'pointer',
                     }}
                   >
                     <div style={{ fontWeight: 600 }}>{student.fname} {student.lname}</div>
-                    <div style={{ fontSize: 12, color: '#555' }}>{student.studentID} | {student.batch}</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{student.studentID} | {student.batch}</div>
                   </button>
                 ))}
               </div>
@@ -141,7 +141,7 @@ const FacultyDashboard = () => {
                 </div>
 
                 {reports.length === 0 && (
-                  <div style={{ textAlign: 'center', padding: 20, color: '#666' }}>
+                  <div style={{ textAlign: 'center', padding: 20, color: 'var(--text-muted)' }}>
                     No reports found for this student.
                   </div>
                 )}
@@ -149,15 +149,15 @@ const FacultyDashboard = () => {
                 {reports.length > 0 && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                     {reports.map(report => (
-                      <div
-                        key={report._id}
-                        style={{
-                          background: '#f9f9f9',
-                          borderRadius: 8,
-                          padding: 16,
-                          border: '1px solid #e3e3e3',
-                        }}
-                      >
+                        <div
+                          key={report._id}
+                          style={{
+                            background: 'var(--surface-muted)',
+                            borderRadius: 8,
+                            padding: 16,
+                            border: `1px solid var(--border-color)`,
+                          }}
+                        >
                         <div style={{ fontWeight: 600, marginBottom: 12 }}>
                           {report.company?.name || 'Unknown Company'} - {report.technology}
                         </div>
@@ -212,7 +212,7 @@ const FacultyDashboard = () => {
                                 </div>
                               )}
                               {week.gradedAt && (
-                                <div style={{ fontSize: 12, color: '#555', marginTop: 8 }}>
+                        <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8 }}>
                                   Graded: {new Date(week.gradedAt).toLocaleDateString()}
                                   {week.remarks && <div style={{ marginTop: 4 }}>Remarks: {week.remarks}</div>}
                                 </div>
@@ -226,7 +226,7 @@ const FacultyDashboard = () => {
                 )}
               </>
             ) : (
-              <div style={{ textAlign: 'center', padding: 40, color: '#666' }}>
+              <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>
                 Select a student to view their reports
               </div>
             )}

@@ -43,7 +43,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f7f6f3', padding: 20 }}>
+    <div style={{ minHeight: '100vh', background: 'var(--background)', padding: 20 }}>
       <div style={{ maxWidth: 900, margin: '0 auto' }}>
         <div className="card" style={{ marginBottom: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
@@ -57,7 +57,7 @@ const Dashboard = () => {
               </button>
             </div>
           </div>
-          <div style={{ fontSize: 14, color: '#555' }}>
+          <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>
             <b>Email:</b> {user.email}<br />
             {user.studentID && <><b>Student ID:</b> {user.studentID}<br /></>}
             {user.batch && <><b>Batch:</b> {user.batch}</>}
@@ -91,10 +91,10 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {loading && <div style={{ textAlign: 'center', padding: 20 }}>Loading...</div>}
+          {loading && <div style={{ textAlign: 'center', padding: 20, color: 'var(--text-muted)' }}>Loading...</div>}
 
           {!loading && internships.length === 0 && (
-            <div style={{ textAlign: 'center', padding: 20, color: '#666', background: '#f9f9f9', borderRadius: 8 }}>
+            <div style={{ textAlign: 'center', padding: 20, color: 'var(--text-muted)', background: 'var(--surface-muted)', borderRadius: 8 }}>
               No internships found. Click "Add Internship" to create your first internship record.
             </div>
           )}
@@ -105,10 +105,10 @@ const Dashboard = () => {
                 <div
                   key={internship._id}
                   style={{
-                    background: '#f9f9f9',
+                    background: 'var(--surface-muted)',
                     borderRadius: 8,
                     padding: 16,
-                    border: '1px solid #e3e3e3',
+                    border: `1px solid var(--border-color)`,
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
@@ -118,7 +118,7 @@ const Dashboard = () => {
                     <div style={{ fontWeight: 600, marginBottom: 8 }}>
                       {internship.company?.name || 'Unknown Company'}
                     </div>
-                    <div style={{ fontSize: 13, color: '#555' }}>
+                    <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
                       <b>Type:</b> {internship.internshipType} | <b>Semester:</b> {internship.semester}
                       {internship.stipend && <> | <b>Stipend:</b> ₹{internship.stipend}</>}
                     </div>
@@ -138,7 +138,7 @@ const Dashboard = () => {
         <div className="card">
           <h3 style={{ margin: 0, marginBottom: 16 }}>My Reports</h3>
           {!loading && reports.length === 0 && (
-            <div style={{ textAlign: 'center', padding: 20, color: '#666', background: '#f9f9f9', borderRadius: 8 }}>
+            <div style={{ textAlign: 'center', padding: 20, color: 'var(--text-muted)', background: 'var(--surface-muted)', borderRadius: 8 }}>
               No reports found. Create an internship first.
             </div>
           )}
@@ -148,10 +148,10 @@ const Dashboard = () => {
                 <div
                   key={report._id}
                   style={{
-                    background: '#f9f9f9',
+                    background: 'var(--surface-muted)',
                     borderRadius: 8,
                     padding: 16,
-                    border: '1px solid #e3e3e3',
+                    border: `1px solid var(--border-color)`,
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
@@ -161,7 +161,7 @@ const Dashboard = () => {
                     <div style={{ fontWeight: 600, marginBottom: 8 }}>
                       {report.company?.name || 'Unknown Company'} - {report.technology}
                     </div>
-                    <div style={{ fontSize: 13, color: '#555' }}>
+                    <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
                       Weekly Reports: {report.weeklyReports?.length || 0}/6
                     </div>
                   </div>
