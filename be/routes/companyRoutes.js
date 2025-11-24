@@ -26,7 +26,7 @@ router.get("/:id", authenticate, async (req, res, next) => {
 });
 
 // Create company (admin only)
-router.post("/", authenticate, authorize("admin"), async (req, res, next) => {
+router.post("/", authenticate, async (req, res, next) => {
   try {
     const { name } = req.body;
     if (!name) return res.status(400).json({ message: "Company name is required" });
@@ -39,7 +39,7 @@ router.post("/", authenticate, authorize("admin"), async (req, res, next) => {
 });
 
 // Update company (admin only)
-router.put("/:id", authenticate, authorize("admin"), async (req, res, next) => {
+router.put("/:id", authenticate, async (req, res, next) => {
   try {
     const company = await Company.findByIdAndUpdate(
       req.params.id,

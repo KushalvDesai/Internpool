@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../lib/api';
 
 const AdminDashboard = () => {
-  const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [students, setStudents] = useState([]);
   const [faculty, setFaculty] = useState([]);
@@ -13,8 +12,9 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('students');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedFaculty, setSelectedFaculty] = useState(null);
-  const [batchInput, setBatchInput] = useState('');
+  const [batchToAssign, setBatchToAssign] = useState(null);
+  const [batchFacultySelection, setBatchFacultySelection] = useState('');
+  const [assigningBatch, setAssigningBatch] = useState(false);
 
   const fetchAll = async () => {
     try {
@@ -41,19 +41,33 @@ const AdminDashboard = () => {
     fetchAll();
   }, []);
 
-  const handleAssignBatch = async (facultyId) => {
-    if (!batchInput.trim()) {
-      alert('Please enter a batch');
+  const groupedStudents = students.reduce((acc, student) => {
+    const key = student.batch || 'Unassigned';
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(student);
+    return acc;
+  }, {});
+
+  const sortedBatchEntries = Object.entries(groupedStudents).sort(([a], [b]) => a.localeCompare(b));
+
+  const findFacultyForBatch = (batch) => faculty.find(f => f.assignedBatch === batch);
+
+  const handleAssignFacultyToBatch = async () => {
+    if (!batchToAssign || !batchFacultySelection) {
+      alert('Please pick a batch and faculty');
       return;
     }
     try {
-      await api.assignFacultyBatch(facultyId, batchInput);
-      setBatchInput('');
-      setSelectedFaculty(null);
+      setAssigningBatch(true);
+      await api.assignFacultyBatch(batchFacultySelection, batchToAssign);
+      setBatchToAssign(null);
+      setBatchFacultySelection('');
       await fetchAll();
-      alert('Batch assigned successfully!');
+      alert('Batch assignment updated');
     } catch (err) {
-      alert(err.message || 'Failed to assign batch');
+      alert(err.message || 'Failed to assign');
+    } finally {
+      setAssigningBatch(false);
     }
   };
 
@@ -149,28 +163,101 @@ const AdminDashboard = () => {
           {loading && <div style={{ textAlign: 'center', padding: 40 }}>Loading...</div>}
 
           {!loading && activeTab === 'students' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {students.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>No students found</div>
               ) : (
-                students.map(student => (
-                  <div
-                    key={student._id}
-                    style={{
-                      background: 'var(--surface-muted)',
-                      borderRadius: 8,
-                      padding: 16,
-                      border: `1px solid var(--border-color)`,
-                    }}
-                  >
-                    <div style={{ fontWeight: 600, marginBottom: 8 }}>
-                      {student.fname} {student.lname}
+                sortedBatchEntries.map(([batchName, batchStudents]) => {
+                  const assignedFaculty = findFacultyForBatch(batchName);
+                  return (
+                    <div
+                      key={batchName}
+                      style={{
+                        background: 'var(--surface-muted)',
+                        borderRadius: 10,
+                        padding: 20,
+                        border: `1px solid var(--border-color)`,
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                        <div>
+                          <h3 style={{ margin: 0 }}>Batch {batchName}</h3>
+                          <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+                            {batchStudents.length} {batchStudents.length === 1 ? 'student' : 'students'}
+                          </div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+                            Assigned Faculty:{' '}
+                            {assignedFaculty ? `${assignedFaculty.fname} ${assignedFaculty.lname}` : 'None'}
+                          </div>
+                          {batchToAssign === batchName ? (
+                            <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                              <select
+                                value={batchFacultySelection}
+                                onChange={(e) => setBatchFacultySelection(e.target.value)}
+                                style={{ minWidth: 200 }}
+                              >
+                                <option value="">Select faculty</option>
+                                {faculty.map((f) => (
+                                  <option key={f._id} value={f._id}>
+                                    {f.fname} {f.lname} {f.assignedBatch && f.assignedBatch !== batchName ? `(Batch ${f.assignedBatch})` : ''}
+                                  </option>
+                                ))}
+                              </select>
+                              <button onClick={handleAssignFacultyToBatch} disabled={assigningBatch}>
+                                {assigningBatch ? 'Assigning...' : 'Save'}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setBatchToAssign(null);
+                                  setBatchFacultySelection('');
+                                }}
+                                style={{ background: 'var(--surface)', color: 'var(--text-primary)' }}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              style={{ marginTop: 8, fontSize: 12, padding: '6px 12px' }}
+                              onClick={() => {
+                                setBatchToAssign(batchName);
+                                setBatchFacultySelection(assignedFaculty?._id || '');
+                              }}
+                            >
+                              {assignedFaculty ? 'Change Faculty' : 'Assign Faculty'}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        {batchStudents.map((student) => (
+                          <div
+                            key={student._id}
+                            style={{
+                              background: 'var(--surface)',
+                              borderRadius: 8,
+                              padding: 12,
+                              border: `1px solid var(--border-color)`,
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              fontSize: 13,
+                              color: 'var(--text-muted)',
+                            }}
+                          >
+                            <div>
+                              <b>{student.fname} {student.lname}</b> — {student.studentID}
+                            </div>
+                            <div>{student.email}</div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
-                      <b>Email:</b> {student.email} | <b>Student ID:</b> {student.studentID} | <b>Batch:</b> {student.batch}
-                    </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           )}
@@ -193,45 +280,15 @@ const AdminDashboard = () => {
                     <div style={{ fontWeight: 600, marginBottom: 8 }}>
                       {f.fname} {f.lname}
                     </div>
-                    <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 12 }}>
-                      <b>Email:</b> {f.email} | <b>Faculty ID:</b> {f.facultyID} | <b>Assigned Batch:</b> {f.assignedBatch || 'None'}
+                    <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 8 }}>
+                      <b>Email:</b> {f.email} | <b>Faculty ID:</b> {f.facultyID}
                     </div>
-                    {selectedFaculty?._id === f._id ? (
-                      <div style={{ display: 'flex', gap: 8 }}>
-                        <input
-                          type="text"
-                          placeholder="Enter batch"
-                          value={batchInput}
-                          onChange={(e) => setBatchInput(e.target.value)}
-                          style={{ flex: 1, padding: 6 }}
-                        />
-                        <button
-                          onClick={() => handleAssignBatch(f._id)}
-                          style={{ fontSize: 12, padding: '6px 12px' }}
-                        >
-                          Assign
-                        </button>
-                        <button
-                          onClick={() => {
-                            setSelectedFaculty(null);
-                            setBatchInput('');
-                          }}
-                          style={{ fontSize: 12, padding: '6px 12px', background: 'var(--surface-muted)', color: 'var(--text-primary)' }}
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => {
-                          setSelectedFaculty(f);
-                          setBatchInput(f.assignedBatch || '');
-                        }}
-                        style={{ fontSize: 12, padding: '6px 12px' }}
-                      >
-                        Assign Batch
-                      </button>
-                    )}
+                    <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+                      Assigned Batch: {f.assignedBatch || 'None'}
+                    </div>
+                    <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>
+                      Last updated: {f.updatedAt ? new Date(f.updatedAt).toLocaleDateString() : 'N/A'}
+                    </div>
                   </div>
                 ))
               )}

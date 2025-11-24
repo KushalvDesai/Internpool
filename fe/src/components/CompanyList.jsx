@@ -22,6 +22,7 @@ const CompanyList = () => {
   const [form, setForm] = useState(initialForm);
   const [saving, setSaving] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
+  const [verifyingId, setVerifyingId] = useState('');
 
   const fetchCompanies = async () => {
     try {
@@ -74,6 +75,22 @@ const CompanyList = () => {
       setError(err.message || 'Failed to add company');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleVerification = async (company, nextState) => {
+    setError('');
+    setSuccessMsg('');
+    setVerifyingId(company._id);
+    try {
+      const updated = await api.updateCompany(company._id, { verified: nextState });
+      setCompanies((prev) => prev.map(c => (c._id === company._id ? updated : c)));
+      setSuccessMsg(`Company ${nextState ? 'verified' : 'set to pending'}`);
+      setTimeout(() => setSuccessMsg(''), 2000);
+    } catch (err) {
+      setError(err.message || 'Failed to update company');
+    } finally {
+      setVerifyingId('');
     }
   };
 
@@ -185,7 +202,21 @@ const CompanyList = () => {
                     border: `1px solid var(--border-color)`,
                   }}
                 >
-                  <div style={{ fontWeight: 600, fontSize: 16 }}>{company.name}</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ fontWeight: 600, fontSize: 16 }}>{company.name}</div>
+                    <span
+                      style={{
+                        fontSize: 12,
+                        padding: '4px 10px',
+                        borderRadius: 999,
+                        background: company.verified ? '#22c55e33' : '#f9731633',
+                        color: company.verified ? '#16a34a' : '#d97706',
+                        border: `1px solid ${company.verified ? '#16a34a44' : '#d9770644'}`,
+                      }}
+                    >
+                      {company.verified ? 'Verified' : 'Pending'}
+                    </span>
+                  </div>
                   <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 6 }}>
                     {company.address || 'No address provided'}
                   </div>
@@ -201,6 +232,21 @@ const CompanyList = () => {
                   {company.hr?.length > 0 && (
                     <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 8 }}>
                       <b>HR:</b> {company.hr[0].name || 'N/A'} {company.hr[0].email && `| ${company.hr[0].email}`} {company.hr[0].contact && `| ${company.hr[0].contact}`}
+                    </div>
+                  )}
+                  {user.role === 'admin' && (
+                    <div style={{ marginTop: 12, display: 'flex', gap: 8 }}>
+                      <button
+                        style={{ fontSize: 12, padding: '6px 12px' }}
+                        onClick={() => handleVerification(company, !company.verified)}
+                        disabled={verifyingId === company._id}
+                      >
+                        {verifyingId === company._id
+                          ? 'Updating...'
+                          : company.verified
+                            ? 'Mark as Pending'
+                            : 'Verify Company'}
+                      </button>
                     </div>
                   )}
                 </div>
